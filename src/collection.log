@@ -1,0 +1,19 @@
+// Example using WebSocket server in Node.js
+const WebSocket = require('ws');
+const jwt = require('jsonwebtoken');
+
+const wss = new WebSocket.Server({ port: 8080});
+
+wss.on('connection', function connection(ws) {
+    ws.on('message', function incoming(message) {
+        const data = JSON.parse(message);
+        if (data.type === 'authenticate') {
+            try {
+                const decoded = jwt.verify(data.token, process.env.JWT_SECRET);
+                ws.user = decoded;  // Store user data in the WebSocket object for future reference
+            } catch (error) {
+                ws.terminate();  // Terminate connection if the token is invalid
+            }
+        }
+    });
+});

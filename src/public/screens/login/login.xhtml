@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Terminal Login</title>
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <style>
+        body {
+            background-color: #000;
+            color: #0f0;
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        #terminal {
+            width: 80%;
+            height: 400px;
+            border: 1px solid #0f0;
+            padding: 20px;
+            box-sizing: border-box;
+            overflow-y: auto;
+        }
+        input {
+            background-color: #000;
+            border: none;
+            color: #0f0;
+            width: 100%;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div id="terminal">
+        <p>Welcome to Terminal. Please login:</p>
+        <form id="loginForm" method="post">
+            <input type="text" id="username" name="username" placeholder="Username" autocomplete="off" />
+            <input type="password" id="password" name="password" placeholder="Password" autocomplete="off" />
+            <input type="submit" value="Login" />
+        </form>
+        <div id="response"></div>
+    </div>
+    <script>
+        document.getElementById('loginForm').onsubmit = async function(event) {
+    event.preventDefault();
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+    const formData = { username, password };
+
+    try {
+        const response = await fetch('/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        });
+
+        if (!response.ok) throw new Error('Login failed');
+
+        // Assuming server sends back a 2xx status on successful login
+        window.location.href = '/dashboard'; // Redirect to the dashboard
+    } catch (error) {
+        document.getElementById('response').innerText = 'Login error: ' + error.message;
+    }
+};
+
+    </script>
+    
+</body>
+</html>
